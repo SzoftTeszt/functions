@@ -107,12 +107,12 @@ app.get('/getClaims/:uid?',verifyToken, (req,res)=>{
 
   app.patch("/updateUser", verifyToken, async (req, res) => {
     try {
-      const {uid, email, password, displayName, phoneNumber, photoURL, emailVerified, disabled, customClaims } = req.body;
+      const {uid, email, password, displayName, phoneNumber, photoURL, emailVerified, disabled, claims } = req.body;
       if (!req.user.admin) {
          uid = req.user.uid
          emailVerified = undefined
          disabled= undefined
-         customClaims=undefined
+         claims=undefined
         };
 
       if (!uid)  uid = req.user.uid
@@ -125,8 +125,8 @@ app.get('/getClaims/:uid?',verifyToken, (req,res)=>{
         emailVerified,
         disabled,
       });  
-      if (customClaims) {
-        await admin.auth().setCustomUserClaims(uid, customClaims);
+      if (claims) {
+        await admin.auth().setCustomUserClaims(uid, claims);
       }  
       res.json({
         message: "Felhasználói adatok sikeresen frissítve.",
@@ -138,7 +138,7 @@ app.get('/getClaims/:uid?',verifyToken, (req,res)=>{
           photoURL: updatedUser.photoURL,
           emailVerified: updatedUser.emailVerified,
           disabled: updatedUser.disabled,
-          customClaims: customClaims || {} 
+          claims: claims || {} 
         },
       });
     } catch (error) {
